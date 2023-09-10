@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Nova",
+
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "Node16",
+    "newLine": "lf",
+    "strict": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "outDir": "platformio.novaextension/Scripts"
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,51 @@
+{
+  "identifier": "robb-j.platformio",
+  "name": "PlatformIO",
+  "organization": "robb-j",
+  "description": "YAML validation based on JSON schemas, including kubernetes",
+  "version": "0.0.0",
+  "categories": ["commands", "tasks"],
+  "license": "MIT",
+  "repository": "https://github.com/robb-j/nova-platformio",
+  "bugs": "https://github.com/robb-j/nova-platformio/issues",
+
+  "main": "main.js",
+
+  "activationEvents": [
+    "onLanguage:cpp",
+    "onLanguage:c",
+    "onLanguage:h",
+    "onWorkspaceContains:platformio.ini"
+  ],
+
+  "entitlements": {
+    "process": true,
+    "requests": true,
+    "filesystem": "readwrite"
+  },
+
+  "commands": {
+    "editor": [],
+    "extensions": [
+      {
+        "title": "Initialize workspace",
+        "command": "robb-j.platformio.initialize"
+      },
+      {
+        "title": "Install",
+        "command": "robb-j.platformio.install"
+      }
+    ]
+  },
+
+  "config": [],
+
+  "configWorkspace": [
+    {
+      "key": "robb-j.platformio.noInstaller",
+      "title": "Disable installer",
+      "type": "boolean",
+      "description": "Do not promp to install or update the PlatformIO core"
+    }
+  ]
+}

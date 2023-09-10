@@ -1,0 +1,20 @@
+{
+  "install-failed-title": "Failed to install PlatformIO",
+  "install-failed-body": "Maybe Python isn't installed? Check the extension README and restart Nova.",
+  "ok": "OK",
+  "open-readme": "Open README.md",
+
+  "install-title": "Install PlatformIO Core",
+  "install-body": "The core needs to be installed for this extension to run",
+  "install-confirm": "Install",
+  "install-deny": "Disable extension",
+
+  "installed-title": "Installed",
+  "installed-body": "The PlatformIO core has been installed into ~/.platformio",
+
+  "sync-title": "Synchronising...",
+  "sync-body": "PlatformIO is working, this will dismiss when complete.",
+
+  "installing-title": "Installing…",
+  "installing-body": "It may take a while to complete, this will dismiss when complete."
+}
