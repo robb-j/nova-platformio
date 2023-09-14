@@ -16,5 +16,8 @@
   "sync-body": "PlatformIO is working, this will dismiss when complete.",
 
   "installing-title": "Installing…",
-  "installing-body": "It may take a while to complete, this will dismiss when complete."
+  "installing-body": "It may take a while to complete, this will dismiss when complete.",
+
+  "copied-title": "Copied",
+  "copied-body": "The item has been copied to your clipboard"
 }

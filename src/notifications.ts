@@ -64,9 +64,7 @@ function fancyNotif(
 }
 
 export function showInstalling(): Disposable {
-  const identifier = 'platformio.installing'
-
-  const notif = new NotificationRequest(identifier)
+  const notif = new NotificationRequest('platformio.installing')
   notif.title = nova.localize('installing-title')
   notif.body = nova.localize('installing-body')
 
@@ -81,9 +79,7 @@ export function showInstalling(): Disposable {
 }
 
 export function showSync(): Disposable {
-  const identifier = 'platformio.sync'
-
-  const notif = new NotificationRequest(identifier)
+  const notif = new NotificationRequest('platformio.sync')
   notif.title = nova.localize('sync-title')
   notif.body = nova.localize('sync-body')
   // nova.notifications.add(notif)
@@ -101,10 +97,18 @@ export function showSync(): Disposable {
 }
 
 export function showInitialized() {
-  const identifier = 'platformio.initialized'
-
-  const notif = new NotificationRequest(identifier)
+  const notif = new NotificationRequest('platformio.initialized')
   notif.title = nova.localize('initialized-title')
   notif.body = nova.localize('initialized-body')
+  return nova.notifications.add(notif)
+}
+
+export function showCopied() {
+  const notif = new NotificationRequest('platformio.copied')
+  notif.title = nova.localize('copied-title')
+  notif.body = nova.localize('copied-body')
+  setTimeout(() => {
+    nova.notifications.cancel(notif.identifier)
+  }, 3_000)
   return nova.notifications.add(notif)
 }

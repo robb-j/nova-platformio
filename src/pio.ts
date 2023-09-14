@@ -8,18 +8,11 @@ import {
   isFile,
 } from './lib.js'
 import { showSync } from './notifications.js'
-import { Board, SystemInfo } from './types.js'
+import { Board, ProjectMetadata, RunTarget, SystemInfo } from './types.js'
 
 type InitializeStatus = 'success' | 'failed' | 'unknown-board'
 
 const debug = createDebug('pio-language-server')
-
-interface CompileCommand {
-  command: string
-  directory: string
-  file: string
-  output: string
-}
 
 export class PlatformIO {
   static getInstance(workspacePath: string) {
@@ -49,18 +42,15 @@ export class PlatformIO {
     public binaryPath: string,
   ) {}
 
-  async start() {
-    debug('#start', this.binaryPath)
-
-    // ...
-  }
-
   dispose(): void {
     debug('#dispose')
   }
 
   async executeJson(args: string[]) {
-    const result = await execute(this.binaryPath, { args })
+    const result = await execute(this.binaryPath, {
+      args,
+      cwd: this.workspacePath,
+    })
     if (!result.ok) return
     return JSON.parse(result.stdout)
   }
@@ -71,6 +61,10 @@ export class PlatformIO {
 
   async listBoards(): Promise<Board[]> {
     return this.executeJson(['boards', '--json-output'])
+  }
+
+  async getMetadata(): Promise<ProjectMetadata> {
+    return this.executeJson(['project', 'metadata', '--json-output'])
   }
 
   async syncWrapper() {

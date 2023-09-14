@@ -37,3 +37,30 @@ export interface Device {
   description: string
   hwid: string
 }
+
+export interface RunTarget {
+  name: string
+  title: string
+  description: string | null
+  group: string
+}
+
+export interface ProjectMetadata {
+  [environment: string]: {
+    build_type: string
+    env_name: string
+    libsource_dirs: string[]
+    defines: string[]
+    includes: string[]
+    cc_flags: string[]
+    cxx_flags: string[]
+    cc_path: string
+    cxx_path: string
+    gdb_path: string
+    prog_path: string
+    svd_path: string | null
+    compiler_type: string
+    targets: RunTarget[]
+    extra: any
+  }
+}

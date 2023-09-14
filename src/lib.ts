@@ -118,6 +118,10 @@ export enum ConfigKey {
 export enum CommandKey {
   initialize = 'robb-j.platformio.initialize',
   install = 'robb-j.platformio.install',
+  reloadBoards = 'robb-j.platformio.reloadBoards',
+  copyBoard = 'robb-j.platformio.copyBoard',
+  reloadTargets = 'robb-j.platformio.reloadTargets',
+  runTarget = 'robb-j.platformio.runTarget',
 }
 
 export function debounce(ms: number, fn: () => void) {

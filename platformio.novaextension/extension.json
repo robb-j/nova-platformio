@@ -21,7 +21,8 @@
   "entitlements": {
     "process": true,
     "requests": true,
-    "filesystem": "readwrite"
+    "filesystem": "readwrite",
+    "clipboard": true
   },
 
   "commands": {
@@ -29,7 +30,8 @@
     "extensions": [
       {
         "title": "Initialize workspace",
-        "command": "robb-j.platformio.initialize"
+        "command": "robb-j.platformio.initialize",
+        "when": "pioInstalled"
       },
       {
         "title": "Install",
@@ -52,6 +54,53 @@
       "title": "Enable debug",
       "type": "boolean",
       "description": "Turn on debugging logging for development"
+    }
+  ],
+
+  "sidebars": [
+    {
+      "id": "info",
+      "name": "PlatformIO",
+      "smallImage": "__builtin.action",
+      "largeImage": "__builtin.action",
+      "sections": [
+        {
+          "id": "info.targets",
+          "name": "Targets",
+          "placeholderText": "No targets",
+          "headerCommands": [
+            {
+              "title": "Refresh",
+              "command": "robb-j.platformio.reloadTargets",
+              "image": "__builtin.refresh"
+            }
+          ]
+        },
+        {
+          "id": "info.boards",
+          "name": "Boards",
+          "headerCommands": [
+            {
+              "title": "Search",
+              "command": "robb-j.platformio.searchBoards",
+              "image": "__builtin.add",
+              "tooltip": "Search for a board"
+            },
+            {
+              "title": "Clear",
+              "command": "robb-j.platformio.resetBoards",
+              "image": "__builtin.remove",
+              "when": "hasBoardSearch",
+              "tooltip": "Clear the search"
+            },
+            {
+              "title": "Refresh",
+              "command": "robb-j.platformio.reloadBoards",
+              "image": "__builtin.refresh"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
