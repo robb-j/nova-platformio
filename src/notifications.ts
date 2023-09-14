@@ -33,19 +33,51 @@ export async function showInstallRequest() {
   return response.actionIdx === 0 ? 'confirm' : 'deny'
 }
 
+function fancyNotif(
+  notif: NotificationRequest,
+  waitTime: number,
+  showTime: number,
+): Disposable {
+  let startTime = Date.now() + waitTime
+
+  let timerId: number | null = setTimeout(() => {
+    console.log('show installing')
+    nova.notifications.add(notif)
+    timerId = null
+  }, waitTime)
+
+  return {
+    dispose() {
+      if (timerId) {
+        clearTimeout(timerId)
+      } else {
+        setTimeout(
+          () => {
+            console.log('cancel')
+            nova.notifications.cancel(notif.identifier)
+          },
+          Date.now() - startTime + showTime,
+        )
+      }
+    },
+  }
+}
+
 export function showInstalling(): Disposable {
   const identifier = 'platformio.installing'
 
   const notif = new NotificationRequest(identifier)
   notif.title = nova.localize('installing-title')
   notif.body = nova.localize('installing-body')
-  nova.notifications.add(notif)
 
-  return {
-    dispose() {
-      nova.notifications.cancel(identifier)
-    },
-  }
+  // let startTime = Date.now() + INSTALL_WAIT_MS
+  // let timerId: number | null = setTimeout(() => {
+  //   console.log('show installing')
+  //   nova.notifications.add(notif)
+  //   timerId = null
+  // }, INSTALL_WAIT_MS)
+
+  return fancyNotif(notif, 3_000, 5_000)
 }
 
 export function showSync(): Disposable {
@@ -54,16 +86,18 @@ export function showSync(): Disposable {
   const notif = new NotificationRequest(identifier)
   notif.title = nova.localize('sync-title')
   notif.body = nova.localize('sync-body')
-  nova.notifications.add(notif)
+  // nova.notifications.add(notif)
 
   // TODO: could ensure they stay for a min of x seconds
   // or ONLY show after a min of x seconds
 
-  return {
-    dispose() {
-      nova.notifications.cancel(identifier)
-    },
-  }
+  return fancyNotif(notif, 3_000, 5_000)
+
+  // return {
+  //   dispose() {
+  //     nova.notifications.cancel(identifier)
+  //   },
+  // }
 }
 
 export function showInitialized() {

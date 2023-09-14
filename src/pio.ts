@@ -1,11 +1,25 @@
 import { runInstaller } from './commands/install.js'
-import { createDebug, debounce, execute, getPioPath, isFile } from './lib.js'
+import {
+  createDebug,
+  debounce,
+  execute,
+  getPioPath,
+  isDebug,
+  isFile,
+} from './lib.js'
 import { showSync } from './notifications.js'
 import { Board, SystemInfo } from './types.js'
 
 type InitializeStatus = 'success' | 'failed' | 'unknown-board'
 
 const debug = createDebug('pio-language-server')
+
+interface CompileCommand {
+  command: string
+  directory: string
+  file: string
+  output: string
+}
 
 export class PlatformIO {
   static getInstance(workspacePath: string) {
@@ -27,7 +41,8 @@ export class PlatformIO {
     return new PlatformIO(workspacePath, pioPath)
   }
 
-  triggerSync = debounce(300, () => this.syncWorkspace())
+  syncPromise: Promise<void> | null = null
+  triggerSync = debounce(300, () => this.syncWrapper())
 
   constructor(
     public workspacePath: string,
@@ -58,6 +73,16 @@ export class PlatformIO {
     return this.executeJson(['boards', '--json-output'])
   }
 
+  async syncWrapper() {
+    if (this.syncPromise) {
+      console.debug('#syncWrapper waiting for previous')
+      await this.syncPromise
+    }
+    this.syncPromise = this.syncWorkspace()
+    await this.syncPromise
+    this.syncPromise = null
+  }
+
   async syncWorkspace() {
     debug('#syncWorkspace')
     const notif = showSync()
@@ -66,13 +91,32 @@ export class PlatformIO {
       args: ['run', '--target', 'compiledb'],
       cwd: this.workspacePath,
     })
-    process.onStdout((l) => debug('stdout ' + l))
-    process.onStderr((l) => debug('stderr ' + l))
+    if (isDebug()) {
+      process.onStdout((l) => debug('stdout ' + l))
+      process.onStderr((l) => debug('stderr ' + l))
+    }
 
-    await new Promise<number>((resolve) => {
+    const status = await new Promise<number>((resolve) => {
       process.onDidExit((status) => resolve(status))
       process.start()
     })
+
+    // TODO: I'm not sure this is a good idea
+    if (status === 0) {
+      const path = nova.path.join(this.workspacePath, 'compile_commands.json')
+      const reader = nova.fs.open(path, 'r') as FileTextMode
+      const output = reader
+        .read()
+        ?.replace(/-mlongcalls/g, '-mlong-calls')
+        .replace(/ -fno-tree-switch-conversion/g, '')
+        .replace(/ -fstrict-volatile-bitfields/g, '')
+      reader.close()
+
+      const writer = nova.fs.open(path, 'w') as FileTextMode
+      if (output) writer.write(output)
+      console.log('done', output?.length)
+      writer.close()
+    }
 
     notif.dispose()
 
@@ -92,8 +136,10 @@ export class PlatformIO {
       args: ['project', 'init', '--board', boardId],
       cwd: this.workspacePath,
     })
-    process.onStdout((l) => debug('stdout ' + l))
-    process.onStderr((l) => debug('stderr ' + l))
+    if (isDebug()) {
+      process.onStdout((l) => debug('stdout ' + l))
+      process.onStderr((l) => debug('stderr ' + l))
+    }
 
     const status = await new Promise<number>((resolve) => {
       process.onDidExit((status) => resolve(status))

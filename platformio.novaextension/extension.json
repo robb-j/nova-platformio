@@ -46,6 +46,12 @@
       "title": "Disable installer",
       "type": "boolean",
       "description": "Do not promp to install or update the PlatformIO core"
+    },
+    {
+      "key": "robb-j.platformio.debug",
+      "title": "Enable debug",
+      "type": "boolean",
+      "description": "Turn on debugging logging for development"
     }
   ]
 }

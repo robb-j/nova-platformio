@@ -38,9 +38,14 @@ export async function activate() {
   nova.workspace.config.observe(ConfigKey.noInstaller, async (value) => {
     debug('observe', ConfigKey.noInstaller, value)
     if (value) return
-    if (!isFile(getPioPath())) pio = await PlatformIO.setup(workspacePath)
+    if (!isFile(getPioPath())) {
+      pio = await PlatformIO.setup(workspacePath)
+      pio?.triggerSync()
+    }
     // TODO: else runUpgrader(nova.workspace, false)
   })
+
+  pio?.triggerSync()
 
   nova.workspace.onDidAddTextEditor((editor) => {
     if (!pio || !syncSyntaxes.has(editor.document.syntax ?? '')) return

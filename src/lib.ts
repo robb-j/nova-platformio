@@ -5,7 +5,6 @@
 export type ProcessParams = ConstructorParameters<typeof Process>
 export type ProcessOutput = {
   ok: boolean
-  combined: string
   stdout: string
   stderr: string
   status: number
@@ -24,26 +23,22 @@ export function execute(
   return new Promise<ProcessOutput>((resolve) => {
     const process = new Process(path, options)
 
-    let combined = ''
-
     // Copy all stdout into an array of lines
     let stdout = ''
     process.onStdout((line) => {
       stdout += line
-      combined += line
     })
 
     // Copy all stderr into an array of lines
     let stderr = ''
     process.onStderr((line) => {
       stderr += line
-      combined += line
     })
 
     // Resolve the promise once the process has exited,
     // with the stdout and stderr as single strings and the status code number
     process.onDidExit((status) =>
-      resolve({ status, stderr, combined, stdout, ok: status === 0 }),
+      resolve({ status, stderr, stdout, ok: status === 0 }),
     )
 
     // Start the process
@@ -118,6 +113,7 @@ export function getPioPath() {
 
 export enum ConfigKey {
   noInstaller = 'robb-j.platformio.noInstaller',
+  debug = 'robb-j.platformio.debug',
 }
 export enum CommandKey {
   initialize = 'robb-j.platformio.initialize',
@@ -130,4 +126,8 @@ export function debounce(ms: number, fn: () => void) {
     if (timerId) clearTimeout(timerId)
     setTimeout(() => fn(), ms)
   }
+}
+
+export function isDebug(workspace = nova.workspace): boolean {
+  return workspace.config.get(ConfigKey.debug, 'boolean') ?? false
 }
