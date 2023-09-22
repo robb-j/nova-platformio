@@ -103,6 +103,8 @@ export function askChoice(
   })
 }
 
+// "isBinary"? 
+// https://github.com/panicinc/icarus/blob/7bfd7967f7414af3f6dab5f0b73d2531543f0f29/Icarus.novaextension/Scripts/main.js#L108
 export function isFile(filename: string) {
   return nova.fs.stat(filename)?.isFile
 }
