@@ -61,6 +61,8 @@ function startup(pio: PlatformIO) {
 
   pio.triggerSync()
 
+  // I think this only needs to happen for platformio.ini
+  // which could be a simpler `fs.watch` -type thing
   nova.workspace.onDidAddTextEditor((editor) => {
     if (!syncSyntaxes.has(editor.document.syntax ?? '')) return
     editor.onDidSave(() => pio.triggerSync())
